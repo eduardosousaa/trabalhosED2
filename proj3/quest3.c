@@ -142,8 +142,10 @@ void primMST(double **graph, int V, int src, int dest) {
     double *key = malloc(V * sizeof(double));
     bool *mstSet = malloc(V * sizeof(bool));
 
-    for (int i = 0; i < V; i++)
-        key[i] = 0, mstSet[i] = false;
+    for (int i = 0; i < V; i++){
+        key[i] = 0;
+        mstSet[i] = false;
+    }
 
     key[src] = 1;
     parent[src] = -1;
