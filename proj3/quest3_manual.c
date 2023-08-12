@@ -94,11 +94,17 @@ void primMST(double graph[VG][VG], int V, int src, int dest) {
 
     for (int count = 0; count < V - 1; count++) {
         int u = maxKey(key, mstSet, V);
+        printf("u = %d\n", u);
         mstSet[u] = true;
 
-        for (int v = 0; v < V; v++)
-            if (graph[u][v] && mstSet[v] == false && graph[u][v] > key[v])
-                parent[v] = u, key[v] = graph[u][v];
+        for (int v = 0; v < V; v++){
+            if (graph[u][v] && mstSet[v] == false && graph[u][v] > key[v]){
+                parent[v] = u;
+                key[v] = graph[u][v];
+                printf("Pai: %d\n", parent[v]);
+                printf("key: %f\n", key[v]);
+            }
+        }
     }
 
     printf("Caminho mais confiavel: %d", src);
