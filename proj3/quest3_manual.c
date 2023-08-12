@@ -7,7 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <time.h>
+
+#define VG 4 // número de vértices no grafo
 
 int maxKey(double key[], bool mstSet[], int V) {
     /**
@@ -66,7 +67,7 @@ void imprm_MST(int parent[], double **graph, int V) {
         printf("%d - %d \t%lf \n", parent[i], i, graph[i][parent[i]]);
 }
 
-void primMST(double **graph, int V, int src, int dest) {
+void primMST(double graph[VG][VG], int V, int src, int dest) {
     /**
      * Executa o algoritmo Prim para encontrar a árvore geradora mínima (MST) em um grafo ponderado.
      *
@@ -108,39 +109,11 @@ void primMST(double **graph, int V, int src, int dest) {
     free(mstSet);
 }
 
-double **geraGrafo(int V) {
-    /**
-     * Gera uma matriz de adjacência representando um grafo aleatório com pesos de aresta.
-     *
-     * Esta função aloca memória para uma matriz de adjacência que representa um grafo com vértices numerados de 0 a V-1.
-     * Cada entrada [i][j] da matriz representa a confiabilidade da aresta entre o vértice i e o vértice j.
-     * A confiabilidade da diagonal principal (i == j) é definida como 0 para representar que não há laços.
-     * Para as outras arestas, a confiabilidade é um valor aleatório no intervalo [0, 1).
-     *
-     * @param V O número de vértices no grafo.
-     *
-     * @return Um ponteiro para a matriz de adjacência recém-gerada.
-     */
-    double **grafo = malloc(V * sizeof(double *));
-    for (int i = 0; i < V; i++) {
-        grafo[i] = malloc(V * sizeof(double));
-        for (int j = 0; j < V; j++) {
-            if (i == j) {
-                grafo[i][j] = 0;
-            } else {
-                grafo[i][j] = (double)rand() / RAND_MAX;
-                printf("Confiabilidade da aresta (%d, %d): %lf\n", i, j, grafo[i][j]);
-            }
-        }
-    }
-    printf("\n\n");
-    return grafo;
-}
-
 int main() {
-    srand(time(NULL));
-    int V = 5;
-    double **grafo = geraGrafo(V);
+    double graph[VG][VG] = {{0, 0.3, 0.1, 0},
+                          {0.3, 0, 0.5, 0.9},
+                          {0.1, 0.5, 0, 0.2},
+                          {0, 0.9, 0.2, 0}};
 
     int src, dest;
     while (1){
@@ -152,9 +125,8 @@ int main() {
         printf("Digite o vertice de destino: ");
         scanf("%d", &dest);
 
-        primMST(grafo, V, src, dest);
+        primMST(graph, VG, src, dest);
     }
 
     return 0;
 }
-
