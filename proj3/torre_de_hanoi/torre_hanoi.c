@@ -99,32 +99,6 @@ int encontra_disc_movido(int **configuracoes, int i, int j)
     return disco_movido;
 }
 
-// int ehMenor(int disco_movido, int **configuracoes, int i)
-// {
-//     /**
-//      * Verifica se um disco movido é o menor disco em relação à configuração atual.
-//      *
-//      * Esta função verifica se o disco movido é o menor disco no pino de origem em relação à configuração atual.
-//      * Ela percorre os discos no pino de origem e compara com o disco movido para determinar se é o menor.
-//      *
-//      * @param disco_movido O índice do disco que foi movido.
-//      * @param configuracoes Um array bidimensional que representa as configurações dos pinos.
-//      * @param i O índice da configuração atual a ser verificada.
-//      *
-//      * @return 1 se o disco movido for o menor na configuração atual, 0 caso contrário.
-//      */
-//     int eh_menor = 1;
-//     for (int k = 0; k < N; k++)
-//     {
-//         if (configuracoes[i][k] == configuracoes[i][disco_movido] && k < disco_movido)
-//         {
-//             eh_menor = 0;
-//             break;
-//         }
-//     }
-//     return eh_menor;
-// }
-
 int mov_valido(int disco_movido, int **configuracoes, int j)
 {
     /**
@@ -151,7 +125,7 @@ int mov_valido(int disco_movido, int **configuracoes, int j)
     return eh_valido;
 }
 
-// Função para criar a matriz de adjacência do grafo da Torre de Hanói
+
 int **cria_matriz_adjacencia(int tamanho, int **configuracoes)
 {
     /**
@@ -177,15 +151,14 @@ int **cria_matriz_adjacencia(int tamanho, int **configuracoes)
     {
         for (int j = 0; j < tamanho; j++)
         {
-            int diff = mexeu(configuracoes, i, j);
-            // Se diferem em apenas uma posição, verifica se o movimento é válido
-            if (diff == 1)
+            int dif = mexeu(configuracoes, i, j);
+            if (dif == 1)
             {
                 int disco_movido = encontra_disc_movido(configuracoes, i, j);
 
-                int eh_menor = mov_valido(disco_movido, configuracoes, i);
+                int eh_menor = mov_valido(disco_movido, configuracoes, i); 
 
-                int eh_valido = mov_valido(disco_movido, configuracoes, j);
+                int eh_valido = mov_valido(disco_movido, configuracoes, j); 
 
                 // Se o movimento é válido, cria uma aresta entre as duas configurações
                 if (eh_menor && eh_valido)
@@ -199,15 +172,25 @@ int **cria_matriz_adjacencia(int tamanho, int **configuracoes)
     return matriz_adjacencia;
 }
 
-
 void imprime_menor_caminho_dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final)
 {
+    /**
+     * Imprime o menor caminho entre duas configurações usando o Algoritmo de Dijkstra.
+     *
+     * Esta função utiliza o Algoritmo de Dijkstra para encontrar o menor caminho entre duas configurações
+     * representadas por vetores de configurações iniciais e finais. Ela utiliza uma matriz de adjacência
+     * que descreve as relações entre as configurações, onde as arestas indicam os movimentos válidos.
+     * Após encontrar o menor caminho, imprime cada configuração do caminho em ordem.
+     *
+     * @param matriz_adjacencia Uma matriz de adjacência que descreve as relações entre as configurações.
+     * @param config_inicial Um array que representa a configuração inicial dos pinos.
+     * @param config_final Um array que representa a configuração final dos pinos.
+     */
     int tamanho = pow(3, N);
     int *distancias = malloc(tamanho * sizeof(int));
     int *visitados = calloc(tamanho, sizeof(int));
     int *antecessores = malloc(tamanho * sizeof(int));
 
-    // Inicializa as distâncias com infinito e os visitados com 0
     for (int i = 0; i < tamanho; i++)
     {
         distancias[i] = INT_MAX;
@@ -215,14 +198,12 @@ void imprime_menor_caminho_dijkstra(int **matriz_adjacencia, int *config_inicial
         antecessores[i] = -1;
     }
 
-    // Converte a configuração inicial para um índice na matriz de adjacência
+
     int indice_inicial = 0;
     for (int i = 0; i < N; i++)
     {
         indice_inicial += config_inicial[i] * pow(3, i);
     }
-
-    // Converte a configuração final para um índice na matriz de adjacência
     int indice_final = 0;
     for (int i = 0; i < N; i++)
     {
@@ -244,10 +225,8 @@ void imprime_menor_caminho_dijkstra(int **matriz_adjacencia, int *config_inicial
             }
         }
 
-        // Marca o vértice como visitado
         visitados[u] = 1;
 
-        // Atualiza as distâncias dos vértices adjacentes
         for (int v = 0; v < tamanho; v++)
         {
             if (!visitados[v] && matriz_adjacencia[u][v] && distancias[u] != INT_MAX && distancias[u] + matriz_adjacencia[u][v] < distancias[v])
@@ -291,15 +270,11 @@ void imprime_menor_caminho_dijkstra(int **matriz_adjacencia, int *config_inicial
         }
     }
 
-    // Libera a memória alocada
     free(distancias);
     free(visitados);
     free(antecessores);
 }
 
-
-
-// Função para encontrar o menor caminho entre duas configurações usando o Algoritmo de Dijkstra
 int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final)
 {
     /**
@@ -319,14 +294,12 @@ int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final)
     int *distancias = malloc(tamanho * sizeof(int));
     int *visitados = calloc(tamanho, sizeof(int));
 
-    // Inicializa as distâncias com infinito e os visitados com 0
     for (int i = 0; i < tamanho; i++)
     {
         distancias[i] = INT_MAX;
         visitados[i] = 0;
     }
 
-    // Converte a configuração inicial para um índice na matriz de adjacência
     int indice_inicial = 0;
     for (int i = 0; i < N; i++)
     {
@@ -339,20 +312,17 @@ int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final)
     // indice_inicial = 1 + 0 + 18 + 0
     // indice_inicial = 19
 
-    // Converte a configuração final para um índice na matriz de adjacência
     int indice_final = 0;
     for (int i = 0; i < N; i++)
     {
         indice_final += config_final[i] * pow(3, i);
     }
 
-    // Define a distância da configuração inicial como 0
     distancias[indice_inicial] = 0;
 
     // Executa o Algoritmo de Dijkstra
     for (int i = 0; i < tamanho - 1; i++)
     {
-        // Encontra o vértice com a menor distância que ainda não foi visitado
         int min_distancia = INT_MAX;
         int u;
         for (int j = 0; j < tamanho; j++)
@@ -364,10 +334,8 @@ int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final)
             }
         }
 
-        // Marca o vértice como visitado
         visitados[u] = 1;
 
-        // Atualiza as distâncias dos vértices adjacentes
         for (int v = 0; v < tamanho; v++)
         {
             if (!visitados[v] && matriz_adjacencia[u][v] && distancias[u] != INT_MAX && distancias[u] + matriz_adjacencia[u][v] < distancias[v])
@@ -377,13 +345,25 @@ int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final)
         }
     }
 
-    // Retorna a menor distância entre a configuração inicial e a configuração final
     return distancias[indice_final];
 }
 
-// Função para medir o tempo gasto para encontrar a solução do desafio da Torre de Hanói
 double mede_tempo_dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final)
 {
+    /**
+     * Mede o tempo gasto para encontrar a solução do desafio da Torre de Hanói usando o Algoritmo de Dijkstra.
+     *
+     * Esta função utiliza o Algoritmo de Dijkstra para encontrar o menor caminho entre duas configurações
+     * representadas por vetores de configurações iniciais e finais. Ela utiliza uma matriz de adjacência
+     * que descreve as relações entre as configurações, onde as arestas indicam os movimentos válidos.
+     * Mede o tempo gasto para a execução do algoritmo em milissegundos.
+     *
+     * @param matriz_adjacencia Uma matriz de adjacência que descreve as relações entre as configurações.
+     * @param config_inicial Um array que representa a configuração inicial dos pinos.
+     * @param config_final Um array que representa a configuração final dos pinos.
+     *
+     * @return O tempo gasto para encontrar a solução em milissegundos.
+     */
     LARGE_INTEGER inicio, fim, frequencia;
 
     // Obtém a frequência do contador de performance
@@ -403,33 +383,39 @@ double mede_tempo_dijkstra(int **matriz_adjacencia, int *config_inicial, int *co
     return tempo_gasto;
 }
 
-
 void imprime_menor_caminho_bellman_ford(int **matriz_adjacencia, int *config_inicial, int *config_final)
 {
+    /**
+     * Imprime o menor caminho entre duas configurações usando o Algoritmo Bellman-Ford.
+     *
+     * Esta função utiliza o Algoritmo Bellman-Ford para encontrar o menor caminho entre duas configurações
+     * representadas por vetores de configurações iniciais e finais. Ela utiliza uma matriz de adjacência
+     * que descreve as relações entre as configurações, onde as arestas indicam os movimentos válidos.
+     * Após encontrar o menor caminho, imprime cada configuração do caminho em ordem.
+     *
+     * @param matriz_adjacencia Uma matriz de adjacência que descreve as relações entre as configurações.
+     * @param config_inicial Um array que representa a configuração inicial dos pinos.
+     * @param config_final Um array que representa a configuração final dos pinos.
+     */
     int tamanho = pow(3, N);
     int *distancias = malloc(tamanho * sizeof(int));
 
-    // Inicializa as distâncias com infinito
     for (int i = 0; i < tamanho; i++)
     {
         distancias[i] = INT_MAX;
     }
 
-    // Converte a configuração inicial para um índice na matriz de adjacência
     int indice_inicial = 0;
     for (int i = 0; i < N; i++)
     {
         indice_inicial += config_inicial[i] * pow(3, i);
     }
-
-    // Converte a configuração final para um índice na matriz de adjacência
     int indice_final = 0;
     for (int i = 0; i < N; i++)
     {
         indice_final += config_final[i] * pow(3, i);
     }
 
-    // Define a distância da configuração inicial como 0
     distancias[indice_inicial] = 0;
 
     // Executa o Algoritmo Ford-Moore-Bellman
@@ -457,7 +443,7 @@ void imprime_menor_caminho_bellman_ford(int **matriz_adjacencia, int *config_ini
         int indice_atual = indice_final;
         int *caminho = malloc(tamanho * sizeof(int));
         int tamanho_caminho = 0;
-        
+
         while (indice_atual != indice_inicial)
         {
             caminho[tamanho_caminho++] = indice_atual;
@@ -471,7 +457,7 @@ void imprime_menor_caminho_bellman_ford(int **matriz_adjacencia, int *config_ini
             }
         }
         caminho[tamanho_caminho++] = indice_inicial;
-        
+
         for (int i = tamanho_caminho - 1; i >= 0; i--)
         {
             int indice = caminho[i];
@@ -488,43 +474,49 @@ void imprime_menor_caminho_bellman_ford(int **matriz_adjacencia, int *config_ini
             printf("\n");
             free(config);
         }
-        
+
         free(caminho);
     }
 
-    // Libera a memória alocada
     free(distancias);
 }
 
-
-
-// Função para encontrar o menor caminho entre duas configurações usando o Algoritmo Ford-Moore-Bellman
 int bellman_ford(int **matriz_adjacencia, int *config_inicial, int *config_final)
 {
+    /**
+     * Encontra o menor caminho entre duas configurações usando o Algoritmo Ford-Moore-Bellman.
+     *
+     * Esta função utiliza o Algoritmo Ford-Moore-Bellman para encontrar o menor caminho entre duas configurações
+     * representadas por vetores de configurações iniciais e finais. Ela utiliza uma matriz de adjacência
+     * que descreve as relações entre as configurações, onde as arestas indicam os movimentos válidos.
+     * Retorna a menor distância entre as configurações iniciais e finais considerando o peso das arestas.
+     *
+     * @param matriz_adjacencia Uma matriz de adjacência que descreve as relações entre as configurações.
+     * @param config_inicial Um array que representa a configuração inicial dos pinos.
+     * @param config_final Um array que representa a configuração final dos pinos.
+     *
+     * @return A menor distância entre as configurações iniciais e finais.
+     */
     int tamanho = pow(3, N);
     int *distancias = malloc(tamanho * sizeof(int));
 
-    // Inicializa as distâncias com infinito
     for (int i = 0; i < tamanho; i++)
     {
         distancias[i] = INT_MAX;
     }
 
-    // Converte a configuração inicial para um índice na matriz de adjacência
     int indice_inicial = 0;
     for (int i = 0; i < N; i++)
     {
         indice_inicial += config_inicial[i] * pow(3, i);
     }
 
-    // Converte a configuração final para um índice na matriz de adjacência
     int indice_final = 0;
     for (int i = 0; i < N; i++)
     {
         indice_final += config_final[i] * pow(3, i);
     }
 
-    // Define a distância da configuração inicial como 0
     distancias[indice_inicial] = 0;
 
     // Executa o Algoritmo Ford-Moore-Bellman
@@ -542,12 +534,25 @@ int bellman_ford(int **matriz_adjacencia, int *config_inicial, int *config_final
         }
     }
 
-    // Retorna a menor distância entre a configuração inicial e a configuração final
     return distancias[indice_final];
 }
 
 double mede_tempo_bellman_ford(int **matriz_adjacencia, int *config_inicial, int *config_final)
 {
+    /**
+     * Mede o tempo gasto para executar o Algoritmo Ford-Moore-Bellman para encontrar o menor caminho entre duas configurações.
+     *
+     * Esta função utiliza o Algoritmo Ford-Moore-Bellman para encontrar o menor caminho entre duas configurações
+     * representadas por vetores de configurações iniciais e finais. Além disso, mede o tempo gasto para executar o algoritmo
+     * utilizando a função QueryPerformanceCounter para obter o tempo inicial e final, e a função QueryPerformanceFrequency
+     * para obter a frequência do contador de performance. O tempo gasto é retornado em milissegundos.
+     *
+     * @param matriz_adjacencia Uma matriz de adjacência que descreve as relações entre as configurações.
+     * @param config_inicial Um array que representa a configuração inicial dos pinos.
+     * @param config_final Um array que representa a configuração final dos pinos.
+     *
+     * @return O tempo gasto em milissegundos para executar o Algoritmo Ford-Moore-Bellman.
+     */
     LARGE_INTEGER inicio, fim, frequencia;
 
     // Obtém a frequência do contador de performance
@@ -567,17 +572,27 @@ double mede_tempo_bellman_ford(int **matriz_adjacencia, int *config_inicial, int
     return tempo_gasto;
 }
 
-// Função para imprimir uma matriz de adjacência
 void imprimir_matriz_adjacencia(int **matriz, int tamanho)
 {
-    for (int i = 0; i < tamanho; i++)
-    {
-        for (int j = 0; j < tamanho; j++)
+    /**
+     * Imprime uma matriz de adjacência.
+     *
+     * Esta função imprime os valores de uma matriz de adjacência fornecida como entrada. Ela percorre a matriz
+     * linha por linha e imprime os elementos separados por espaço. Cada linha é seguida por uma quebra de linha.
+     *
+     * @param matriz A matriz de adjacência a ser impressa.
+     * @param tamanho O tamanho da matriz (número de linhas e colunas).
+     */
+    if(matriz != NULL){
+        for (int i = 0; i < tamanho; i++)
         {
-            printf("%d ", matriz[i][j]);
+            for (int j = 0; j < tamanho; j++)
+            {
+                printf("%d ", matriz[i][j]);
+            }
+            printf("\n");
         }
-        printf("\n");
-    }
+    }else printf("Matriz vazia.\n");
 }
 
 int validar_configuracoes(int *config_inicial, int *config_final)
