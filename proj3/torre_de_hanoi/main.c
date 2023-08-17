@@ -54,7 +54,7 @@ int main()
 
     do
     {
-        menu();
+        // menu();
         scanf("%d", &op);
         printf("\n");
 

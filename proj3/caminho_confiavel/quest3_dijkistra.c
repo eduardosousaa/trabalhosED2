@@ -118,12 +118,24 @@ void dijkstra(double grafo[V][V], int origem, int dest)
 
 int main()
 {
+    int origem = 0, dest;
     double grafo[V][V] = {{0, 0.3, 0.1, 0},
                           {0.3, 0, 0.5, 0.9},
                           {0.1, 0.5, 0, 0.2},
                           {0, 0.9, 0.2, 0}};
+    while(origem != -1){
+        printf("Digite o vertice de origem (entre 0 e 3. -1 para encerrar o programa): ");
+        scanf("%d", &origem);
+        if(origem == -1)
+            break;
+        printf("Digite o vertice de destino (entre 0 e 3): ");
+        scanf("%d", &dest);
+        if(origem < 0 || origem > V-1 || dest < 0 || dest > V-1){
+            printf("Valores invalidos.\n");
+        }else 
+            dijkstra(grafo, origem, dest);
+    }
 
-    dijkstra(grafo, 2, 3);
 
     return 0;
 }
