@@ -1,16 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <stdbool.h>
 
 #define V 4 // número de vértices no grafo
 
-int maxKey(double key[], bool mstSet[]) {
+int maxKey(double key[], int mstSet[]) {
+    /**
+     * Encontra o índice do vértice não incluído em um conjunto (mstSet) com a maior chave (peso).
+     *
+     * Esta função encontra o índice do vértice que ainda não foi incluído no conjunto mstSet
+     * e possui a maior chave (peso) entre os vértices não incluídos.
+     *
+     * @param key Um array que armazena as chaves (pesos) dos vértices.
+     * @param mstSet Um array que indica se um vértice está incluído em um conjunto (0 para não incluído, 1 para incluído).
+     *
+     * @return O índice do vértice com a maior chave (peso) entre os vértices não incluídos.
+     */
     double max = 0;
     int max_index;
 
     for (int v = 0; v < V; v++)
-        if (mstSet[v] == false && key[v] > max){
+        if (mstSet[v] == 0 && key[v] > max){
             max = key[v]; 
             max_index = v;
         }
@@ -36,7 +46,7 @@ void imprm_camnh(int parent[], int j) {
     printf(" -> %d", j);
 }
 
-void iniclz_array(double *dist, bool *sptSet, int *parent){
+void iniclz_array(double *dist, int *sptSet, int *parent){
     /**
      * Inicializa os arrays de distâncias, sptSet e parent com valores padrão.
      *
@@ -49,7 +59,7 @@ void iniclz_array(double *dist, bool *sptSet, int *parent){
      */
     for (int i = 0; i < V; i++){
         dist[i] = 0;
-        sptSet[i] = false;
+        sptSet[i] = 0;
         parent[i] = -1;
     }
 }
@@ -67,7 +77,7 @@ void dijkstra(double graph[V][V], int src, int dest) {
      * @param dest O vértice de destino para o qual o caminho mais confiável será calculado.
      */
     double *dist = malloc(V * sizeof(double));
-    bool *sptSet = malloc(V * sizeof(bool));
+    int *sptSet = malloc(V * sizeof(int));
     int *parent = malloc(V * sizeof(int));
 
     iniclz_array(dist, sptSet, parent);
@@ -76,7 +86,7 @@ void dijkstra(double graph[V][V], int src, int dest) {
 
     for (int count = 0; count < V - 1; count++) {
         int u = maxKey(dist, sptSet);
-        sptSet[u] = true;
+        sptSet[u] = 1;
 
         for (int v = 0; v < V; v++){
             if (!sptSet[v] && graph[u][v] && dist[u] != 0 && dist[u] * graph[u][v] > dist[v]){
