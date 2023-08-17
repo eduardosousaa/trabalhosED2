@@ -6,62 +6,24 @@
 
 #define N 4 // Número de discos
 
-// para_base3: Esta função converte um número na base 10 para a base 3. Ela recebe como parâmetros um número 
-// inteiro num e um ponteiro para um array de inteiros arr. A função armazena a representação do número num na 
-// base 3 no array arr.
-
-// A conversão de um número na base 10 para a base 3 é necessária para representar as configurações dos discos 
-// nos pinos do desafio da Torre de Hanói. Cada configuração pode ser representada por um vetor com tantas posições 
-// quantas forem os discos. Na posição do disco será marcado o pino onde o disco está assentado. Como existem 3 pinos, 
-// cada posição do vetor pode ter um valor entre 0 e 2, representando os pinos 0, 1 e 2.
-
-// Ao converter um número na base 10 para a base 3, obtemos uma representação desse número como uma sequência de 
-// dígitos na base 3. Essa sequência de dígitos pode ser usada para representar uma configuração dos discos nos 
-// pinos. Por exemplo, se temos 4 discos, o número 0 na base 10 pode ser convertido para a base 3 como 0000, 
-// representando a configuração em que todos os discos estão no pino 0. O número 80 na base 10 pode ser convertido 
-// para a base 3 como 2222, representando a configuração em que todos os discos estão no pino 2.
-
-// A conversão de números na base 10 para a base 3 permite criar uma correspondência entre os números inteiros e as 
-// configurações dos discos nos pinos. Isso é útil para criar a matriz de adjacência do grafo que representa os 
-// movimentos possíveis dos discos no desafio da Torre de Hanói. Cada configuração pode ser associada a um índice na 
-// matriz de adjacência usando sua representação na base 3. Isso permite verificar facilmente se duas configurações 
-// são adjacentes no grafo (ou seja, se é possível mover um disco de uma configuração para outra) e encontrar o menor 
-// caminho entre duas configurações usando algoritmos de busca em grafos, como o Algoritmo de Dijkstra.
-
-
-
-// cria_matriz_adjacencia: Esta função cria a matriz de adjacência do grafo que representa os movimentos 
-// possíveis dos discos no desafio da Torre de Hanói para o caso de 4 discos. A função não recebe nenhum 
-// parâmetro e retorna um ponteiro para a matriz de adjacência criada.
-
-// dijkstra: Esta função encontra o menor caminho entre duas configurações de discos nos pinos usando o 
-// Algoritmo de Dijkstra. A função recebe como parâmetros a matriz de adjacência do grafo, um ponteiro para 
-// a configuração inicial dos discos nos pinos (config_inicial) e um ponteiro para a configuração final dos 
-// discos nos pinos (config_final). A função retorna o menor número de movimentos necessários para chegar da 
-// configuração inicial à configuração final.
-
-// mede_tempo: Esta função mede o tempo gasto para encontrar a solução do desafio da Torre de Hanói 
-// usando o Algoritmo de Dijkstra. A função recebe como parâmetros a matriz de adjacência do grafo, um ponteiro 
-// para a configuração inicial dos discos nos pinos (config_inicial) e um ponteiro para a configuração final dos 
-// discos nos pinos (config_final). A função retorna o tempo gasto em milissegundos para encontrar o menor caminho 
-// entre essas duas configurações usando o Algoritmo de Dijkstra.
-
-
-
-void imprime_configuracoes(int **configuracoes, int tamanho) {
-    for (int i = 0; i < tamanho; i++) {
-        printf("Configuracao %d: ", i+1);
-        for (int j = 0; j < N; j++) {
+void imprime_configuracoes(int **configuracoes, int tamanho)
+{
+    for (int i = 0; i < tamanho; i++)
+    {
+        printf("Configuracao %d: ", i + 1);
+        for (int j = 0; j < N; j++)
+        {
             printf("%d ", configuracoes[i][j]);
         }
         printf("\n");
     }
 }
 
-
 // Função para converter um número na base 10 para a base 3
-void para_base3(int num, int *arr) {
-    for (int i = 0; i < N; i++) {
+void para_base3(int num, int *arr)
+{
+    for (int i = 0; i < N; i++)
+    {
         arr[i] = num % 3;
         num /= 3;
     }
@@ -149,22 +111,12 @@ int mov_valido(int disco_movido, int **configuracoes, int j)
 }
 
 // Função para criar a matriz de adjacência do grafo da Torre de Hanói
-int **cria_matriz_adjacencia()
+int **cria_matriz_adjacencia(int tamanho, int **configuracoes, int *criou)
 {
-    // Aloca memória para a matriz de adjacência
-    int tamanho = pow(3, N);
     int **matriz_adjacencia = malloc(tamanho * sizeof(int *));
     for (int i = 0; i < tamanho; i++)
     {
         matriz_adjacencia[i] = calloc(tamanho, sizeof(int));
-    }
-
-    // Aloca memória para a lista de configurações
-    int **configuracoes = malloc(tamanho * sizeof(int *));
-    for (int i = 0; i < tamanho; i++)
-    {
-        configuracoes[i] = malloc(N * sizeof(int));
-        para_base3(i, configuracoes[i]);
     }
 
     // Cria as arestas do grafo
@@ -178,7 +130,7 @@ int **cria_matriz_adjacencia()
             {
                 int disco_movido = encontra_disc_movido(configuracoes, i, j);
 
-                int eh_menor = ehMenor(disco_movido, configuracoes, i);
+                int eh_menor = mov_valido(disco_movido, configuracoes, i);
 
                 int eh_valido = mov_valido(disco_movido, configuracoes, j);
 
@@ -191,26 +143,27 @@ int **cria_matriz_adjacencia()
         }
     }
 
-    imprime_configuracoes(configuracoes, tamanho);
-
     return matriz_adjacencia;
 }
 
 // Função para encontrar o menor caminho entre duas configurações usando o Algoritmo de Dijkstra
-int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final) {
+int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final)
+{
     int tamanho = pow(3, N);
     int *distancias = malloc(tamanho * sizeof(int));
     int *visitados = calloc(tamanho, sizeof(int));
 
     // Inicializa as distâncias com infinito e os visitados com 0
-    for (int i = 0; i < tamanho; i++) {
+    for (int i = 0; i < tamanho; i++)
+    {
         distancias[i] = INT_MAX;
         visitados[i] = 0;
     }
 
     // Converte a configuração inicial para um índice na matriz de adjacência
     int indice_inicial = 0;
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++)
+    {
         indice_inicial += config_inicial[i] * pow(3, i);
     }
 
@@ -220,10 +173,10 @@ int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final) {
     // indice_inicial = 1 + 0 + 18 + 0
     // indice_inicial = 19
 
-
     // Converte a configuração final para um índice na matriz de adjacência
     int indice_final = 0;
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++)
+    {
         indice_final += config_final[i] * pow(3, i);
     }
 
@@ -231,12 +184,15 @@ int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final) {
     distancias[indice_inicial] = 0;
 
     // Executa o Algoritmo de Dijkstra
-    for (int i = 0; i < tamanho - 1; i++) {
+    for (int i = 0; i < tamanho - 1; i++)
+    {
         // Encontra o vértice com a menor distância que ainda não foi visitado
         int min_distancia = INT_MAX;
         int u;
-        for (int j = 0; j < tamanho; j++) {
-            if (!visitados[j] && distancias[j] <= min_distancia) {
+        for (int j = 0; j < tamanho; j++)
+        {
+            if (!visitados[j] && distancias[j] <= min_distancia)
+            {
                 min_distancia = distancias[j];
                 u = j;
             }
@@ -246,8 +202,10 @@ int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final) {
         visitados[u] = 1;
 
         // Atualiza as distâncias dos vértices adjacentes
-        for (int v = 0; v < tamanho; v++) {
-            if (!visitados[v] && matriz_adjacencia[u][v] && distancias[u] != INT_MAX && distancias[u] + matriz_adjacencia[u][v] < distancias[v]) {
+        for (int v = 0; v < tamanho; v++)
+        {
+            if (!visitados[v] && matriz_adjacencia[u][v] && distancias[u] != INT_MAX && distancias[u] + matriz_adjacencia[u][v] < distancias[v])
+            {
                 distancias[v] = distancias[u] + matriz_adjacencia[u][v];
             }
         }
@@ -258,7 +216,8 @@ int dijkstra(int **matriz_adjacencia, int *config_inicial, int *config_final) {
 }
 
 // Função para medir o tempo gasto para encontrar a solução do desafio da Torre de Hanói
-double mede_tempo(int **matriz_adjacencia, int *config_inicial, int *config_final) {
+double mede_tempo(int **matriz_adjacencia, int *config_inicial, int *config_final)
+{
     LARGE_INTEGER inicio, fim, frequencia;
 
     // Obtém a frequência do contador de performance
@@ -278,15 +237,121 @@ double mede_tempo(int **matriz_adjacencia, int *config_inicial, int *config_fina
     return tempo_gasto;
 }
 
-// Exemplo de uso das funções cria_matriz_adjacencia, dijkstra e mede_tempo para resolver o desafio da Torre de Hanói para o caso de 4 discos
-int main() {
-    int **matriz_adjacencia = cria_matriz_adjacencia();
+// Função para imprimir uma matriz de adjacência
+void imprimir_matriz_adjacencia(int **matriz, int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        for (int j = 0; j < tamanho; j++) {
+            printf("%d ", matriz[i][j]);
+        }
+        printf("\n");
+    }
+}
 
+int validar_configuracoes(int *config_inicial, int *config_final)
+{
+    // Verifica se os valores das configurações estão dentro dos limites aceitáveis
+    for (int i = 0; i < N; i++)
+    {
+        if (config_inicial[i] < 0 || config_inicial[i] > 2 ||
+            config_final[i] < 0 || config_final[i] > 2)
+        {
+            printf("Erro: Valores inválidos nas configurações.\n");
+            return 0;
+        }
+    }
+
+    return 1; // Configurações válidas
+}
+
+
+
+void menu()
+{
+    printf("\nEscolha uma opcao:\n");
+    printf("1. Modelar grafo a partir de uma matriz de adjacencia\n");
+    printf("2. Imprimir possiveis configuracoes da torre\n");
+    printf("3. Encontrar menor caminho\n");
+    printf("4. Medir tempo para encontrar o menor caminho\n");
+    printf("5. Imprimir matriz de adjacencia\n");
+    printf("0. Sair\n");
+}
+
+// Exemplo de uso das funções cria_matriz_adjacencia, dijkstra e mede_tempo para resolver o desafio da Torre de Hanói para o caso de 4 discos
+int main()
+{
+    // Aloca memória para a matriz de adjacência
+    int tamanho = pow(3, N);
+
+    // Aloca memória para a lista de configurações
+    int **configuracoes = malloc(tamanho * sizeof(int *));
+    for (int i = 0; i < tamanho; i++)
+    {
+        configuracoes[i] = malloc(N * sizeof(int));
+        para_base3(i, configuracoes[i]);
+    }
+
+    // int **matriz_adjacencia = cria_matriz_adjacencia(tamanho, configuracoes);
+
+    // int config_inicial[N] = {0, 0, 0, 0};
+    // int config_final[N] = {2, 2, 2, 2};
+
+    // imprime_configuracoes(configuracoes, tamanho);
+
+    // printf("Menor numero de movimentos: %d\n", dijkstra(matriz_adjacencia, config_inicial, config_final));
+    // printf("Tempo gasto: %f milissegundos\n", mede_tempo(matriz_adjacencia, config_inicial, config_final));
+
+    int inicio[N], fim[N];
     int config_inicial[N] = {0, 0, 0, 0};
     int config_final[N] = {2, 2, 2, 2};
+    int **matriz_adjacencia;
+    int op, confirma = 0, indice_inicio = 0, indice_fim = 0;
 
-    printf("Menor numero de movimentos: %d\n", dijkstra(matriz_adjacencia, config_inicial, config_final));
-    printf("Tempo gasto: %f milissegundos\n", mede_tempo(matriz_adjacencia, config_inicial, config_final));
+    do
+    {
+        menu();
+        scanf("%d", &op);
+
+        switch (op)
+        {
+        case 1:
+            matriz_adjacencia = cria_matriz_adjacencia(tamanho, configuracoes, &confirma);
+            break;
+        case 2:
+            imprime_configuracoes(configuracoes, tamanho);
+            break;
+        case 3:
+            printf("Exemplos de configuracoes: \nTodos os discos no primeiro pino: 0 0 0 0 \n");
+            printf("Todos os discos no ultimo pino: 2 2 2 2\n\n");
+            printf("Insira os valores das configurações inicial e final (4 valores separados por espaço):\n");
+            printf("Configuracao inicial: ");
+            for (int i = 0; i < N; i++)
+            {
+                scanf("%d", &inicio[i]);
+            }
+            printf("Configuracao final: ");
+            for (int i = 0; i < N; i++)
+            {
+                scanf("%d", &fim[i]);
+            }
+            if(validar_configuracoes(inicio, fim)){
+                printf("Menor numero de movimentos: %d\n", dijkstra(matriz_adjacencia, inicio, fim));
+            }else{
+                printf("Configuracoes invalidas!\n");
+            }
+            break;
+        case 4:
+            printf("Tempo gasto: %f milissegundos\n", mede_tempo(matriz_adjacencia, config_inicial, config_final));
+            break;
+        case 5:
+            imprimir_matriz_adjacencia(matriz_adjacencia, tamanho);
+            break;
+        case 0:
+            printf("Saindo do programa.\n");
+            break;
+        default:
+            printf("Opção inválida. Escolha novamente.\n");
+        }
+    } while (op != 0);
 
     return 0;
 }

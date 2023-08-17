@@ -1,0 +1,42 @@
+
+// para_base3: Esta função converte um número na base 10 para a base 3. Ela recebe como parâmetros um número 
+// inteiro num e um ponteiro para um array de inteiros arr. A função armazena a representação do número num na 
+// base 3 no array arr.
+
+// A conversão de um número na base 10 para a base 3 é necessária para representar as configurações dos discos 
+// nos pinos do desafio da Torre de Hanói. Cada configuração pode ser representada por um vetor com tantas posições 
+// quantas forem os discos. Na posição do disco será marcado o pino onde o disco está assentado. Como existem 3 pinos, 
+// cada posição do vetor pode ter um valor entre 0 e 2, representando os pinos 0, 1 e 2.
+
+// Ao converter um número na base 10 para a base 3, obtemos uma representação desse número como uma sequência de 
+// dígitos na base 3. Essa sequência de dígitos pode ser usada para representar uma configuração dos discos nos 
+// pinos. Por exemplo, se temos 4 discos, o número 0 na base 10 pode ser convertido para a base 3 como 0000, 
+// representando a configuração em que todos os discos estão no pino 0. O número 80 na base 10 pode ser convertido 
+// para a base 3 como 2222, representando a configuração em que todos os discos estão no pino 2.
+
+// A conversão de números na base 10 para a base 3 permite criar uma correspondência entre os números inteiros e as 
+// configurações dos discos nos pinos. Isso é útil para criar a matriz de adjacência do grafo que representa os 
+// movimentos possíveis dos discos no desafio da Torre de Hanói. Cada configuração pode ser associada a um índice na 
+// matriz de adjacência usando sua representação na base 3. Isso permite verificar facilmente se duas configurações 
+// são adjacentes no grafo (ou seja, se é possível mover um disco de uma configuração para outra) e encontrar o menor 
+// caminho entre duas configurações usando algoritmos de busca em grafos, como o Algoritmo de Dijkstra.
+
+
+
+// cria_matriz_adjacencia: Esta função cria a matriz de adjacência do grafo que representa os movimentos 
+// possíveis dos discos no desafio da Torre de Hanói para o caso de 4 discos. A função não recebe nenhum 
+// parâmetro e retorna um ponteiro para a matriz de adjacência criada.
+
+// dijkstra: Esta função encontra o menor caminho entre duas configurações de discos nos pinos usando o 
+// Algoritmo de Dijkstra. A função recebe como parâmetros a matriz de adjacência do grafo, um ponteiro para 
+// a configuração inicial dos discos nos pinos (config_inicial) e um ponteiro para a configuração final dos 
+// discos nos pinos (config_final). A função retorna o menor número de movimentos necessários para chegar da 
+// configuração inicial à configuração final.
+
+// mede_tempo: Esta função mede o tempo gasto para encontrar a solução do desafio da Torre de Hanói 
+// usando o Algoritmo de Dijkstra. A função recebe como parâmetros a matriz de adjacência do grafo, um ponteiro 
+// para a configuração inicial dos discos nos pinos (config_inicial) e um ponteiro para a configuração final dos 
+// discos nos pinos (config_final). A função retorna o tempo gasto em milissegundos para encontrar o menor caminho 
+// entre essas duas configurações usando o Algoritmo de Dijkstra.
+
+
